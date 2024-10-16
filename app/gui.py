@@ -3,6 +3,8 @@ import tkinter as tk
 from tkinter import ttk
 from logic import  find_words_re
 from utils import make_icon_app
+import platform
+from constants import CHECK_OS
 
 
 class FindWordsAppClass(ttk.Frame):
@@ -12,9 +14,13 @@ class FindWordsAppClass(ttk.Frame):
         self.pack(fill="both", expand=True)   
         self.create_main_window()
         self.create_menu()
+        if platform.system() == CHECK_OS["macOS"]:
+            self.init_data_for_darwin()
+        else:
+            self.init_data_for_another()
         self.create_text_widgets()
         self.create_ok_and_exit_btns()
-        
+
         self.init_mouse_menu()
 
         self.bind_all("<Escape>", self.on_escape)
@@ -25,7 +31,7 @@ class FindWordsAppClass(ttk.Frame):
 
     def create_main_window(self) -> None:  
         self.master.title("Find Words")
-        self.master.geometry("550x700")
+        self.master.geometry("600x700")
         icon = make_icon_app()
         self.master.iconphoto(True, icon)
                 
@@ -38,6 +44,17 @@ class FindWordsAppClass(ttk.Frame):
 
         self.main_menu.add_cascade(label="File", menu=self.file_menu)
 
+    def init_data_for_darwin(self) -> None:
+        self.init_data: dict = {
+            "tk_or_ttk": tk,
+            "But_2_or_But_3": "<Button-2>",
+        }
+
+    def init_data_for_another(self):
+        self.init_data: dict = {
+            "tk_or_ttk": ttk,
+            "But_2_or_But_3": "<Button-3>",
+        } 
 
     def create_text_widgets(self) -> None:
         self.frame_general_txt = ttk.Frame(self.master)
@@ -52,7 +69,7 @@ class FindWordsAppClass(ttk.Frame):
         self.frame_txt = ttk.Frame(master=self.frame_general_txt)
         self.frame_txt.pack(side="bottom", fill="both", expand=True)
         
-        self.ent_widget = ttk.Entry(master=self.frame_under_ent, width=50)
+        self.ent_widget = self.init_data["tk_or_ttk"].Entry(master=self.frame_under_ent, width=50)
         self.ent_widget.pack(side="left", fill="none", expand=False)
         self.ent_widget.bind("<Control-a>", self.select_all_text)
         
@@ -101,8 +118,11 @@ class FindWordsAppClass(ttk.Frame):
         self.context_mouse_menu.add_command(label="Copy", command=self.copy)
         self.context_mouse_menu.add_command(label="Paste", command=self.paste)
 
-        self.ent_widget.bind("<Button-3>", self.mouse_popup)
-        self.txt_widget.bind("<Button-3>", self.mouse_popup)
+        self.ent_widget.bind(self.init_data["But_2_or_But_3"], self.mouse_popup)
+        self.txt_widget.bind(self.init_data["But_2_or_But_3"], self.set_txt_widget_focus)
+        self.txt_widget.bind(self.init_data["But_2_or_But_3"], self.mouse_popup)
+        self.master.bind(self.init_data["But_2_or_But_3"], self.clear_focus)
+
 
     def mouse_popup(self, event) -> None:
         try:
@@ -113,6 +133,11 @@ class FindWordsAppClass(ttk.Frame):
     def hide_popup(self, event) -> None:
         self.context_mouse_menu.unpost()
 
+    def set_txt_widget_focus(self, event) -> None:
+        self.focus_set()
+
+    def clear_focus(self, event) -> None:
+        self.focus_set()
 
     def on_escape(self, event) -> None:
         self.hide_popup(event)

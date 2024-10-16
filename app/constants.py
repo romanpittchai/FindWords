@@ -3,6 +3,7 @@ from typing import Dict
 CHECK_OS: Dict[str, str] = {
     "win": "Windows",
     "lin": "Linux",
+    "macOS": "Darwin",
 }
 
 THEMES_APP: Dict[str, str] = {
