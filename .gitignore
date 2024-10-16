@@ -165,3 +165,11 @@ cython_debug/
 .DS_Store
 /.DS_Store
 app/.DS_Store
+
+# Other
+tmp
+tmp/
+/tmp
+/icon.ico
+icon.ico
+./icon.ico
