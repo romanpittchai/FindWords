@@ -1,9 +1,8 @@
 import os
 import tempfile
 import base64
-import zlib
 from PIL import Image, ImageTk
-from constants import ICON_PLUG, ICON_NAME
+from constants import ICON_NAME
 
 def check_tmp_directory_and_file(filename: str, tmp_dir: str) -> bool:
     """
@@ -25,9 +24,19 @@ def check_tmp_directory_and_file(filename: str, tmp_dir: str) -> bool:
 
 
 def make_icon_app() -> ImageTk.PhotoImage:
-    icon_plug_app: bytes = zlib.decompress(base64.b64decode(ICON_PLUG))
     current_dir: str = os.path.dirname(os.path.abspath(__file__))
-    tmp_dir:str = os.path.join(current_dir, 'tmp')
+    # Написать проверку есть ли папка и файл
+    # Написать возможность избегать аварийного завершения программы
+    # путём создания папки files если той нет и самого текстового файла
+    # из файла icon.ico из tmp если тот существует.
+    # Если нет ни того ни другого, взять прозрачную картинку, 
+    # чтобы не завершать аварийно программу. 
+    icon_base64 = os.path.join((os.path.join(current_dir, 'files')), 'icon_base64.txt') 
+    with open(icon_base64, 'r') as file:
+        icon_img: str= file.read()
+    icon_plug_app: bytes = base64.b64decode(icon_img)
+    
+    tmp_dir: str = os.path.join(current_dir, 'tmp')
     check_ico_file: bool = check_tmp_directory_and_file(ICON_NAME, tmp_dir)
     
     returning_icon_path: str = os.path.join(tmp_dir, ICON_NAME)

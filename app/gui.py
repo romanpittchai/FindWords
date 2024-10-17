@@ -14,10 +14,14 @@ class FindWordsAppClass(ttk.Frame):
         self.pack(fill="both", expand=True)   
         self.create_main_window()
         self.create_menu()
+        # Занести проверку в одну функцию.
+        # ********************************
         if platform.system() == CHECK_OS["macOS"]:
             self.init_data_for_darwin()
         else:
             self.init_data_for_another()
+        # ********************************
+        
         self.create_text_widgets()
         self.create_ok_and_exit_btns()
 
