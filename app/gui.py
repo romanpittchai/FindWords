@@ -3,8 +3,9 @@ import tkinter as tk
 from tkinter import ttk
 from logic import  find_words_re
 from utils import make_icon_app
+import base64
 import platform
-from constants import CHECK_OS
+from constants import CHECK_OS, GLASS_ICON
 
 
 class FindWordsAppClass(ttk.Frame):
@@ -14,13 +15,8 @@ class FindWordsAppClass(ttk.Frame):
         self.pack(fill="both", expand=True)   
         self.create_main_window()
         self.create_menu()
-        # Занести проверку в одну функцию.
-        # ********************************
-        if platform.system() == CHECK_OS["macOS"]:
-            self.init_data_for_darwin()
-        else:
-            self.init_data_for_another()
-        # ********************************
+
+        self.init_data_for_OS()
         
         self.create_text_widgets()
         self.create_ok_and_exit_btns()
@@ -30,6 +26,7 @@ class FindWordsAppClass(ttk.Frame):
         self.bind_all("<Escape>", self.on_escape)
         
         self.bind_all("<Button-1>", self.hide_popup)
+        self.glass = base64.b64decode(GLASS_ICON)
 
         
 
@@ -44,21 +41,40 @@ class FindWordsAppClass(ttk.Frame):
         self.main_menu = tk.Menu(self.master)
         self.master.config(menu=self.main_menu)
         self.file_menu = tk.Menu(master=self.main_menu, tearoff=0)
-        self.file_menu.add_command(label="New file", command=self.new_file)
-
         self.main_menu.add_cascade(label="File", menu=self.file_menu)
+        #************************ прописать команды
+        self.file_menu.add_command(label="Open the source file", command=self.new_file)
+        self.file_menu.add_command(label="Start processing", command=self.new_file)
+        self.file_menu.add_command(label="Save the processed file", command=self.new_file)
+        self.file_menu.add_separator()
+        self.file_menu.add_command(label="Exit", command=self.new_file)
 
-    def init_data_for_darwin(self) -> None:
-        self.init_data: dict = {
-            "tk_or_ttk": tk,
-            "But_2_or_But_3": "<Button-2>",
-        }
+        self.reg_exp_menu = tk.Menu(master=self.main_menu, tearoff=0)
+        self.main_menu.add_cascade(label="RegExp", menu=self.reg_exp_menu)
+        self.reg_exp_menu.add_command(label="Open a file with regexp", command=self.new_file)
+        self.reg_exp_menu.add_command(label="Save a file with regexp", command=self.new_file)
+        self.reg_exp_menu.add_command(label="Clear the RegExp", command=self.new_file)
 
-    def init_data_for_another(self):
-        self.init_data: dict = {
-            "tk_or_ttk": ttk,
-            "But_2_or_But_3": "<Button-3>",
-        } 
+        self.text_field_menu = tk.Menu(master=self.main_menu, tearoff=0)
+        self.main_menu.add_cascade(label="Text", menu=self.text_field_menu)
+        self.text_field_menu.add_command(label="Select text", command=self.new_file)
+        self.text_field_menu.add_command(label="Clear the text field", command=self.new_file)
+        self.text_field_menu.add_command(label="Cut text", command=self.new_file)
+        self.text_field_menu.add_command(label="Copy text", command=self.new_file)
+        self.text_field_menu.add_command(label="Paste text", command=self.new_file)
+
+
+    def init_data_for_OS(self) -> None:
+        if platform.system() == CHECK_OS["macOS"]:
+            self.init_data: dict = {
+                "tk_or_ttk": tk,
+                "But_2_or_But_3": "<Button-2>",
+            }
+        else: 
+            self.init_data: dict = {
+                "tk_or_ttk": ttk,
+                "But_2_or_But_3": "<Button-3>",
+            }
 
     def create_text_widgets(self) -> None:
         self.frame_general_txt = ttk.Frame(self.master)
@@ -76,8 +92,9 @@ class FindWordsAppClass(ttk.Frame):
         self.ent_widget = self.init_data["tk_or_ttk"].Entry(master=self.frame_under_ent, width=50)
         self.ent_widget.pack(side="left", fill="none", expand=False)
         self.ent_widget.bind("<Control-a>", self.select_all_text)
-        
-        self.ent_button = ttk.Button(master=self.frame_under_ent, text="The")
+        #*********************************************
+        self.ent_button = ttk.Button(master=self.frame_under_ent, image=self.glass)
+        #*********************************************
         self.ent_button.pack(side="left", fill="none", expand=False)
 
 
@@ -117,6 +134,8 @@ class FindWordsAppClass(ttk.Frame):
 
     def init_mouse_menu(self) -> None:
         self.context_mouse_menu = tk.Menu(self, tearoff=0)
+        self.context_mouse_menu.add_command(label="Save as", command=self.self_as_file)
+        self.context_mouse_menu.add_separator()
         self.context_mouse_menu.add_command(label="Select text", command=self.select_all_text)
         self.context_mouse_menu.add_command(label="Cut", command=self.cut)
         self.context_mouse_menu.add_command(label="Copy", command=self.copy)
@@ -133,6 +152,9 @@ class FindWordsAppClass(ttk.Frame):
             self.context_mouse_menu.tk_popup(event.x_root, event.y_root)
         finally:
             self.context_mouse_menu.grab_release()
+
+    def self_as_file(self, event) -> None:
+        pass
 
     def hide_popup(self, event) -> None:
         self.context_mouse_menu.unpost()
