@@ -1,11 +1,9 @@
-import os
 import tkinter as tk
 from tkinter import ttk
 from logic import  find_words_re
 from utils import make_icon_app
-import base64
 import platform
-from constants import CHECK_OS, GLASS_ICON
+from constants import CHECK_OS
 
 
 class FindWordsAppClass(ttk.Frame):
@@ -26,7 +24,7 @@ class FindWordsAppClass(ttk.Frame):
         self.bind_all("<Escape>", self.on_escape)
         
         self.bind_all("<Button-1>", self.hide_popup)
-        self.glass = base64.b64decode(GLASS_ICON)
+        
 
         
 
@@ -93,7 +91,7 @@ class FindWordsAppClass(ttk.Frame):
         self.ent_widget.pack(side="left", fill="none", expand=False)
         self.ent_widget.bind("<Control-a>", self.select_all_text)
         #*********************************************
-        self.ent_button = ttk.Button(master=self.frame_under_ent, image=self.glass)
+        self.ent_button = ttk.Button(master=self.frame_under_ent) # , image=self.glass
         #*********************************************
         self.ent_button.pack(side="left", fill="none", expand=False)
 

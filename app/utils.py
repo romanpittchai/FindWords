@@ -3,7 +3,7 @@ import tempfile
 import base64
 import zlib
 from PIL import Image, ImageTk
-from constants import ICON_NAME, ICON_PLUG
+from constants import ICON_NAME, ICON_PLUG, GLASS_ICON
 
 def check_tmp_directory_and_file(filename: str, tmp_dir: str) -> bool:
     """
@@ -28,6 +28,7 @@ def make_icon_app() -> ImageTk.PhotoImage:
     current_dir: str = os.path.dirname(os.path.abspath(__file__))
     icon_base64 = os.path.join((os.path.join(current_dir, 'files')), 'icon_base64.txt')
     icon_plug_app: bytes = zlib.decompress(base64.b64decode(ICON_PLUG))
+    icon_btn_glass = base64.b64decode(GLASS_ICON)
     if os.path.isfile(icon_base64):
         with open(icon_base64, 'r') as file:
             icon_img: str= file.read()
