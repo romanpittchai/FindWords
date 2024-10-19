@@ -3,7 +3,6 @@ import tempfile
 import base64
 import zlib
 from PIL import Image, ImageTk
-from constants import ICON_NAME, ICON_PLUG, GLASS_ICON
 
 def check_tmp_directory_and_file(filename: str, tmp_dir: str) -> bool:
     """
@@ -17,45 +16,18 @@ def check_tmp_directory_and_file(filename: str, tmp_dir: str) -> bool:
         os.mkdir(tmp_dir)
     else:
         file_path: str = os.path.join(tmp_dir, filename)
-        print(file_path)
         if os.path.isfile(file_path):
             check_ico_file = True
     return check_ico_file
 
 
-
-def make_icon_app() -> ImageTk.PhotoImage:
-    current_dir: str = os.path.dirname(os.path.abspath(__file__))
-    icon_base64 = os.path.join((os.path.join(current_dir, 'files')), 'icon_base64.txt')
-    icon_plug_app: bytes = zlib.decompress(base64.b64decode(ICON_PLUG))
-    icon_btn_glass = base64.b64decode(GLASS_ICON)
-    if os.path.isfile(icon_base64):
-        with open(icon_base64, 'r') as file:
-            icon_img: str= file.read()
-        icon_plug_app: bytes = base64.b64decode(icon_img)
-    
-    tmp_dir: str = os.path.join(current_dir, 'tmp')
-    check_ico_file: bool = check_tmp_directory_and_file(ICON_NAME, tmp_dir)
-    
-    returning_icon_path: str = os.path.join(tmp_dir, ICON_NAME)
-    
-    if not check_ico_file:
-        fd, icon_path_app = tempfile.mkstemp(suffix=".ico", dir=tmp_dir)
+def make_icon_app(icon: str, icon_name: str, icon_format: str) -> ImageTk.PhotoImage:
+    tmp_dir: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tmp')
+    icon_name_with_format: str = f"{icon_name}{icon_format}"
+    check_img_file: bool = check_tmp_directory_and_file(icon_name_with_format, tmp_dir)
+    if not check_img_file:
+        fd, icon_path_app = tempfile.mkstemp(suffix=icon_format, dir=tmp_dir)
         with open(fd, "wb") as icon_file:
-            icon_file.write(icon_plug_app)
-        returning_icon_path: str = os.path.join(tmp_dir, ICON_NAME)
-        os.rename(icon_path_app, returning_icon_path)
-    
-    return create_ico(returning_icon_path)
-
-def create_ico(img_path: str) -> ImageTk.PhotoImage:
-    """
-    Открывает изображение и создает объект PhotoImage для использования в tkinter.
-
-    :param img_path: Путь к изображению, которое нужно открыть.
-    :return: Объект PhotoImage, который можно использовать в tkinter.
-    """
-    image: Image.Image = Image.open(img_path)
-    photo: ImageTk.PhotoImage = ImageTk.PhotoImage(image)
-
-    return photo
+            icon_file.write(zlib.decompress(base64.b64decode(icon)))
+        os.rename(icon_path_app, os.path.join(tmp_dir, icon_name_with_format))
+    return ImageTk.PhotoImage(Image.open(os.path.join(tmp_dir, icon_name_with_format)))

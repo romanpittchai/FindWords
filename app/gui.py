@@ -3,7 +3,7 @@ from tkinter import ttk
 from logic import  find_words_re
 from utils import make_icon_app
 import platform
-from constants import CHECK_OS
+from constants import CHECK_OS, ICONS, ICON_NAMES, ICON_FORMAT
 
 
 class FindWordsAppClass(ttk.Frame):
@@ -31,8 +31,12 @@ class FindWordsAppClass(ttk.Frame):
     def create_main_window(self) -> None:  
         self.master.title("Find Words")
         self.master.geometry("600x700")
-        icon = make_icon_app()
-        self.master.iconphoto(True, icon)
+        self.main_icon = make_icon_app(
+            ICONS["main_icon"],
+            ICON_NAMES["main_icon"],
+            ICON_FORMAT["ico"]
+        )
+        self.master.iconphoto(True, self.main_icon)
                 
 
     def create_menu(self) -> None:
@@ -41,7 +45,7 @@ class FindWordsAppClass(ttk.Frame):
         self.file_menu = tk.Menu(master=self.main_menu, tearoff=0)
         self.main_menu.add_cascade(label="File", menu=self.file_menu)
         #************************ прописать команды
-        self.file_menu.add_command(label="Open the source file", command=self.new_file)
+        self.file_menu.add_command(label="Open the source file", command=self.new_file, accelerator="Ctrl+Shift+S")
         self.file_menu.add_command(label="Start processing", command=self.new_file)
         self.file_menu.add_command(label="Save the processed file", command=self.new_file)
         self.file_menu.add_separator()
@@ -91,7 +95,11 @@ class FindWordsAppClass(ttk.Frame):
         self.ent_widget.pack(side="left", fill="none", expand=False)
         self.ent_widget.bind("<Control-a>", self.select_all_text)
         #*********************************************
-        self.ent_button = ttk.Button(master=self.frame_under_ent) # , image=self.glass
+        
+        self.ent_button = ttk.Button(
+            master=self.frame_under_ent,
+            text="Open"
+        )
         #*********************************************
         self.ent_button.pack(side="left", fill="none", expand=False)
 
