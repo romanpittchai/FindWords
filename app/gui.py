@@ -32,9 +32,9 @@ class FindWordsAppClass(ttk.Frame):
         self.master.title("Find Words")
         self.master.geometry("600x700")
         self.main_icon = make_icon_app(
-            ICONS["main_icon"],
-            ICON_NAMES["main_icon"],
-            ICON_FORMAT["ico"]
+            ICONS.get("main_icon"),
+            ICON_NAMES.get("main_icon"),
+            ICON_FORMAT.get("ico")
         )
         self.master.iconphoto(True, self.main_icon)
                 
@@ -67,7 +67,7 @@ class FindWordsAppClass(ttk.Frame):
 
 
     def init_data_for_OS(self) -> None:
-        if platform.system() == CHECK_OS["macOS"]:
+        if platform.system() == CHECK_OS.get("macOS"):
             self.init_data: dict = {
                 "tk_or_ttk": tk,
                 "But_2_or_But_3": "<Button-2>",
@@ -91,7 +91,7 @@ class FindWordsAppClass(ttk.Frame):
         self.frame_txt = ttk.Frame(master=self.frame_general_txt)
         self.frame_txt.pack(side="bottom", fill="both", expand=True)
         
-        self.ent_widget = self.init_data["tk_or_ttk"].Entry(master=self.frame_under_ent, width=50)
+        self.ent_widget = self.init_data.get("tk_or_ttk").Entry(master=self.frame_under_ent, width=50)
         self.ent_widget.pack(side="left", fill="none", expand=False)
         self.ent_widget.bind("<Control-a>", self.select_all_text)
         #*********************************************
@@ -147,10 +147,10 @@ class FindWordsAppClass(ttk.Frame):
         self.context_mouse_menu.add_command(label="Copy", command=self.copy)
         self.context_mouse_menu.add_command(label="Paste", command=self.paste)
 
-        self.ent_widget.bind(self.init_data["But_2_or_But_3"], self.mouse_popup)
-        self.txt_widget.bind(self.init_data["But_2_or_But_3"], self.set_txt_widget_focus)
-        self.txt_widget.bind(self.init_data["But_2_or_But_3"], self.mouse_popup)
-        self.master.bind(self.init_data["But_2_or_But_3"], self.clear_focus)
+        self.ent_widget.bind(self.init_data.get("But_2_or_But_3"), self.mouse_popup)
+        self.txt_widget.bind(self.init_data.get("But_2_or_But_3"), self.set_txt_widget_focus)
+        self.txt_widget.bind(self.init_data.get("But_2_or_But_3"), self.mouse_popup)
+        self.master.bind(self.init_data.get("But_2_or_But_3"), self.clear_focus)
 
 
     def mouse_popup(self, event) -> None:
