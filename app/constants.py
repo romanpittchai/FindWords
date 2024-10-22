@@ -1,4 +1,16 @@
-from typing import Dict
+import os
+from typing import Dict, Tuple
+
+FILETYPES: Tuple[Tuple[str, str], ...] = (
+    ('Text files', '.txt'),
+    ('All files', '.*')
+)
+
+TMP_DIR: str = os.path.join(os.path.dirname(
+    os.path.abspath(__file__)), 'tmp'
+)
+
+TOOLTIP_DELAY: int = 1500
 
 CHECK_OS: Dict[str, str] = {
     "win": "Windows",
