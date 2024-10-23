@@ -60,17 +60,13 @@ class FindWordsAppClass(ttk.Frame):
         self.pack(fill="both", expand=True)   
         self.create_main_window()
         self.create_menu()
-
         self.init_data_for_OS()
-        
         self.create_text_widgets()
         self.create_ok_and_exit_btns()
-
         self.init_mouse_menu()
+        self.init_bind_shortcuts()
 
-        self.bind_all("<Escape>", self.on_escape)
         
-        self.bind_all("<Button-1>", self.hide_popup)
         
 
         
@@ -92,7 +88,7 @@ class FindWordsAppClass(ttk.Frame):
                 
 
     def create_menu(self) -> None:
-        self.main_menu = tk.Menu(self.master)
+        self.main_menu = tk.Menu(self.master, name="main_menu")
         self.master.config(menu=self.main_menu)
         self.file_menu = tk.Menu(master=self.main_menu, tearoff=0)
         self.main_menu.add_cascade(label="File", menu=self.file_menu)
@@ -135,7 +131,7 @@ class FindWordsAppClass(ttk.Frame):
         )
 
         self.reg_exp_menu = tk.Menu(master=self.main_menu, tearoff=0)
-        self.main_menu.add_cascade(label="RegExp", menu=self.reg_exp_menu)
+        self.main_menu.add_cascade(label="RegExp and Text", menu=self.reg_exp_menu)
         self.reg_exp_menu.add_command(
             label="Open a file with regexp",
             command=self.open_regexp_file,
@@ -154,27 +150,41 @@ class FindWordsAppClass(ttk.Frame):
         self.master.bind(
             '<Control-Shift-S>', lambda event: self.save_regexp_file()
         )
+        
+        self.reg_exp_menu.add_separator()
+
         self.reg_exp_menu.add_command(
-            label="Clear the RegExp",
-            command=self.clear_regexp_field,
-            accelerator="Ctrl+Alt+R"
+            label="Select text",
+            command=self.select_all,
+            accelerator="Ctrl+A"
         )
         self.master.bind(
-            '<Control-Shift-R>', lambda event: self.clear_regexp_field()
+            '<Control-a>', self.select_all
         )
-        self.reg_exp_menu.add_separator()
-        self.reg_exp_menu.add_command(label="Cut regexp", command=self.new_file, accelerator="Ctrl+X")
-        self.reg_exp_menu.add_command(label="Copy regexp", command=self.new_file, accelerator="Ctrl+C")
-        self.reg_exp_menu.add_command(label="Paste regexp", command=self.new_file, accelerator="Ctrl+V")
-
-        self.text_field_menu = tk.Menu(master=self.main_menu, tearoff=0)
-        self.main_menu.add_cascade(label="Text", menu=self.text_field_menu)
-        self.text_field_menu.add_command(label="Select text", command=self.new_file, accelerator="Ctrl+A")
-        self.text_field_menu.add_command(label="Clear the text field", command=self.new_file, accelerator="Ctrl+Alt+T")
-        self.reg_exp_menu.add_separator()
-        self.text_field_menu.add_command(label="Cut text", command=self.new_file, accelerator="Ctrl+X")
-        self.text_field_menu.add_command(label="Copy text", command=self.new_file, accelerator="Ctrl+C")
-        self.text_field_menu.add_command(label="Paste text", command=self.new_file, accelerator="Ctrl+V")
+        
+        self.reg_exp_menu.add_command(
+            label="Clear the text field",
+            command=self.clear_field,
+            accelerator="Ctrl+G"
+        )
+        self.master.bind(
+            '<Control-g>', lambda event: self.clear_field()
+        )
+        self.reg_exp_menu.add_command(
+            label="Cut text",
+            command=self.cut,
+            accelerator="Ctrl+X"
+        )
+        self.reg_exp_menu.add_command(
+            label="Copy text",
+            command=self.copy,
+            accelerator="Ctrl+C"
+        )
+        self.reg_exp_menu.add_command(
+            label="Paste text",
+            command=self.paste,
+            accelerator="Ctrl+V"
+        )
 
 
     
@@ -194,7 +204,6 @@ class FindWordsAppClass(ttk.Frame):
         self.ent_widget = self.init_data.get("tk_or_ttk").Entry(master=self.frame_under_ent, width=50)
         self.ent_widget.pack(side="left", fill="none", expand=False)
         ToolTip(self.ent_widget, "RegExp")
-        self.ent_widget.bind("<Control-a>", self.select_all_text)
 
         self.ent_button = ttk.Button(
             master=self.frame_under_ent,
@@ -210,7 +219,6 @@ class FindWordsAppClass(ttk.Frame):
         self.txt_widget['yscrollcommand'] = self.scrollbar_txt.set
         self.scrollbar_txt.pack(side="right", fill="y")
         self.txt_widget.pack(side="bottom", fill="both", expand=True)
-        self.txt_widget.bind("<Control-a>", self.select_all_text)
 
 
 
@@ -255,20 +263,28 @@ class FindWordsAppClass(ttk.Frame):
         self.btn_exit.pack()
         ToolTip(self.btn_exit, "Exit the program")
 
+    def init_bind_shortcuts(self) -> None:
+        self.bind_all("<Escape>", self.on_escape)
+        self.bind_all("<Button-1>", self.hide_popup)
+
 
     def init_mouse_menu(self) -> None:
-        self.context_mouse_menu = tk.Menu(self, tearoff=0)
+        self.context_mouse_menu = tk.Menu(self, tearoff=0, name="mouse_menu")
         self.context_mouse_menu.add_command(label="Save as", command=self.self_as_file)
         self.context_mouse_menu.add_separator()
-        self.context_mouse_menu.add_command(label="Select text", command=self.select_all_text)
+        self.context_mouse_menu.add_command(
+            label="Select text",command=self.select_all)
         self.context_mouse_menu.add_command(label="Cut", command=self.cut)
         self.context_mouse_menu.add_command(label="Copy", command=self.copy)
         self.context_mouse_menu.add_command(label="Paste", command=self.paste)
 
-        self.ent_widget.bind(self.init_data.get("But_2_or_But_3"), self.mouse_popup)
-        self.txt_widget.bind(self.init_data.get("But_2_or_But_3"), self.set_txt_widget_focus)
-        self.txt_widget.bind(self.init_data.get("But_2_or_But_3"), self.mouse_popup)
-        self.master.bind(self.init_data.get("But_2_or_But_3"), self.clear_focus)
+
+        #self.master.bind(self.init_data.get("But_2_or_But_3"), self.mouse_popup, add="+")
+       # self.ent_widget.bind(self.init_data.get("But_2_or_But_3"), self.mouse_popup_ent)
+       # self.ent_widget.bind(self.init_data.get("But_2_or_But_3"), self.set_txt_widget_focus)
+        self.txt_widget.bind(self.init_data.get("But_2_or_But_3"), self.mouse_popup, add="+")        
+        self.txt_widget.bind(self.init_data.get("But_2_or_But_3"), self.set_txt_widget_focus, add="+")
+        #self.master.bind(self.init_data.get("But_2_or_But_3"), self.clear_focus)
 
 
     def mouse_popup(self, event) -> None:
@@ -281,10 +297,15 @@ class FindWordsAppClass(ttk.Frame):
         pass
 
     def hide_popup(self, event) -> None:
-        self.context_mouse_menu.unpost()
+###################################
+        full_widget_name: str = str(event.widget)
+        widget_name: list = full_widget_name.split('.')[-1]
+        
+        if not widget_name == "mouse_menu":
+            self.context_mouse_menu.unpost()
 
     def set_txt_widget_focus(self, event) -> None:
-        self.focus_set()
+        event.widget.focus_set()
 
     def clear_focus(self, event) -> None:
         self.focus_set()
@@ -342,25 +363,37 @@ class FindWordsAppClass(ttk.Frame):
     def show_reg_exp_context_menu(self, event) -> None:
         self.context_regexp_mouse_menu.tk_popup(event.x_root, event.y_root)
 
-    def select_all_text(self) -> None:
-        pass
+    def get_active_widget(self) -> None:
+        return self.focus_get()
 
-    def cut(self, widget) -> None:
-        print("!!!!")
+    def select_all(self, event=None) -> None:
+        widget = self.get_active_widget()
+        if isinstance(widget, tk.Text):
+            widget.tag_add("sel", "1.0", "end-1c")
+        elif isinstance(widget, tk.Entry):
+            widget.select_range(0, tk.END)
+            widget.icursor(tk.END)
 
+
+    def cut(self) -> None:
+        self.master.focus_get().event_generate("<<Cut>>")
 
     def copy(self) -> None:
-        pass
+        self.master.focus_get().event_generate("<<Copy>>")
 
     def paste(self) -> None:
-        pass
+        self.master.focus_get().event_generate("<<Paste>>")
 
     def new_file(self) -> None:
         pass 
 
 
-    def clear_regexp_field(self) -> None:
-        self.ent_widget.delete(0, tk.END)
+    def clear_field(self) -> None:
+        widget = self.get_active_widget()
+        if isinstance(widget, tk.Text):
+            widget.delete("1.0", "end")
+        elif isinstance(widget, tk.Entry):
+            widget.delete(0, tk.END)
 
 
     def open_regexp_file(self) -> None:
