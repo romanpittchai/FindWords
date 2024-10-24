@@ -26,9 +26,3 @@ def find_words_re(pattern, text) -> List[str]:
     """
 
     return re.findall(pattern, text)
-
-
-
-
-
-

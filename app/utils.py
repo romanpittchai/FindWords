@@ -1,17 +1,20 @@
-import os
-import tempfile
 import base64
-import zlib
+import os
 import shutil
+import tempfile
+import zlib
+
 from PIL import Image, ImageTk
 
+
 def check_tmp_directory_and_file(
-        tmp_dir: str, make_or_del: bool,
-        filename: str = "main_icon.ico"
-    ) -> bool:
+        tmp_dir: str,
+        make_or_del: bool,
+        filename: str = "main_icon.ico",
+) -> bool:
     """
     Проверяет существование временной папки и файла внутри неё.
-    
+
     Аргументы:
     tmp_dir (str): Путь к временной директории.
     make_or_del (bool): Флаг, указывающий, нужно ли создавать
@@ -27,7 +30,7 @@ def check_tmp_directory_and_file(
     ************************************************
 
     Checks the existence of a temporary folder and a file inside it.
- 
+
     Arguments:
     tmp_dir (str): The path to the temporary directory.
     make_or_del (bool): A flag indicating whether to create
@@ -42,7 +45,7 @@ def check_tmp_directory_and_file(
     """
 
     check_ico_file: bool = False
-    if make_or_del:        
+    if make_or_del:
         if not (os.path.exists(tmp_dir) and os.path.isdir(tmp_dir)):
             os.mkdir(tmp_dir)
         else:
@@ -55,7 +58,10 @@ def check_tmp_directory_and_file(
     return check_ico_file
 
 
-def make_icon_app(icon: str, icon_name: str, icon_format: str, tmp_dir: str) -> ImageTk.PhotoImage:
+def make_icon_app(
+        icon: str, icon_name: str,
+        icon_format: str, tmp_dir: str
+) -> ImageTk.PhotoImage:
     """
     Создает и возвращает объект PhotoImage для иконки приложения.
 
@@ -84,13 +90,18 @@ def make_icon_app(icon: str, icon_name: str, icon_format: str, tmp_dir: str) -> 
 
     icon_name_with_format: str = f"{icon_name}{icon_format}"
     for_check_tmp: bool = True
-    check_img_file: bool = check_tmp_directory_and_file(tmp_dir, for_check_tmp, icon_name_with_format)
+    check_img_file: bool = check_tmp_directory_and_file(
+        tmp_dir, for_check_tmp,
+        icon_name_with_format
+    )
     if not check_img_file:
         fd, icon_path_app = tempfile.mkstemp(suffix=icon_format, dir=tmp_dir)
         with open(fd, "wb") as icon_file:
             icon_file.write(zlib.decompress(base64.b64decode(icon)))
         os.rename(icon_path_app, os.path.join(tmp_dir, icon_name_with_format))
-    return ImageTk.PhotoImage(Image.open(os.path.join(tmp_dir, icon_name_with_format)))
+    return ImageTk.PhotoImage(
+        Image.open(os.path.join(tmp_dir, icon_name_with_format))
+    )
 
 
 def delete_tmp(tmp_dir: str) -> None:

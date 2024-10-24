@@ -1,8 +1,9 @@
+import platform
 import tkinter as tk
+
+from constants import CHECK_OS, THEMES_APP
 from gui import FindWordsAppClass
 from ttkthemes import ThemedTk
-import platform
-from constants import CHECK_OS, THEMES_APP
 
 
 def main() -> None:
@@ -34,7 +35,8 @@ def main() -> None:
 
     Return value:
     None
-    """    
+    """
+
     os_name = platform.system()
     if os_name == CHECK_OS.get("win"):
         root = ThemedTk(theme=THEMES_APP.get("win"))
@@ -44,6 +46,7 @@ def main() -> None:
         root = tk.Tk()
     app = FindWordsAppClass(master=root)
     app.mainloop()
+
 
 if __name__ == "__main__":
     main()
