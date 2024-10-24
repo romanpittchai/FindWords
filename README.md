@@ -7,7 +7,7 @@ FindWords — это приложение для поиска слов в тек
 - Поиск слов по регулярным выражениям.
 - Поддержка работы с текстом через контекстное меню.
 - Копирование, вырезание, вставка, выделение текста.
-- Поддержка горячих клавиш (Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X, Ctrl+Z).
+- Поддержка горячих клавиш (Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X).
 - Работа с текстовыми файлами через диалоговые окна.
 
 ## Требования
@@ -64,7 +64,7 @@ FindWords is an application for searching words in text with the ability to use 
 - Search for words using regular expressions.
 - Support for text manipulation through a context menu.
 - Cut, copy, paste, and select text functionalities.
-- Support for keyboard shortcuts (Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X, Ctrl+Z).
+- Support for keyboard shortcuts (Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X).
 - File handling for text files via dialog windows.
 
 ## Requirements
@@ -103,7 +103,7 @@ python3 ./app/main.py
 
 ```bash
 pip install pyinstaller
-pyinstaller --onefile --hidden-import=PIL._tkinter_finder --paths=/путь/к/вашему/venv/lib/python3/site-packages ./app/main.py ./app/utils.py ./app/logic.py ./app/gui.py ./app/constants.py
+pyinstaller --onefile --hidden-import=PIL._tkinter_finder --paths=/path/to/your/venv/lib/python3/site-packages ./app/main.py ./app/utils.py ./app/logic.py ./app/gui.py ./app/constants.py
 ```
 
 # License
