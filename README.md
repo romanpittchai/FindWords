@@ -113,9 +113,9 @@ pip install pyinstaller
 pyinstaller --onefile --hidden-import=PIL._tkinter_finder --paths=/path/to/your/venv/lib/python3/site-packages ./app/main.py ./app/utils.py ./app/logic.py ./app/gui.py ./app/constants.py
 
 # For Windows
-pyinstaller --onefile --noconsole \app\main.py \app\utils.py \app\logic.py \app\gui.py \app\constants.py
+pyinstaller --onefile --noconsole app\main.py app\utils.py app\logic.py app\gui.py app\constants.py
 ```
 
 # License
 
-Feel free to adjust any parts of the text as needed!
+This project is distributed under the MIT license. For more information, see the LICENSE file.
