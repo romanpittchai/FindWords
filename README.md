@@ -30,7 +30,7 @@ FindWords — это приложение для поиска слов в тек
     ```bash
     python3 -m venv venv
     source venv/bin/activate  # Для Linux/macOS
-    # Или для Windows: venv\Scripts\activate
+    venv\Scripts\activate # Или для Windows 
     pip install -r requirements.txt
     ```
 
@@ -51,7 +51,7 @@ pip install pyinstaller
 pyinstaller --onefile --hidden-import=PIL._tkinter_finder --paths=/путь/к/вашему/venv/lib/python3/site-packages ./app/main.py ./app/utils.py ./app/logic.py ./app/gui.py ./app/constants.py
 
 # Для Windows
-pyinstaller --onefile --noconsole \app\main.py \app\utils.py \app\logic.py \app\gui.py \app\constants.py
+pyinstaller --onefile --noconsole app\main.py app\utils.py app\logic.py app\gui.py app\constants.py
 ```
 
 # Лицензия
@@ -92,7 +92,7 @@ FindWords is an application for searching words in text with the ability to use 
     ```bash
     python3 -m venv venv
     source venv/bin/activate  # For Linux/macOS
-    # Or for Windows: venv\Scripts\activate
+    venv\Scripts\activate # Or for Windows
     pip install -r requirements.txt
     ```
 
